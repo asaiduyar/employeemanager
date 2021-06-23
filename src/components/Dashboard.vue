@@ -7,16 +7,16 @@
               <b-col>
                 <h3>Active Employees</h3>
                  
-                   <b-row v-for="employee in employees" v-bind:key="employee.id" class="collection-item">
-                    <div v-if="employee.status == 'active'" class="col-ex">
-                     <img :src="employee.image" alt="" class="avatar">
-                     <div class="chip">{{employee.dept}}</div>
-                     {{employee.employee_id}}:{{employee.name}}
-                     <router-link class="secondary-content" 
-                       v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
-                      <i class="fa fa-eye" aria-hidden="true"></i>
-                    </router-link>
-                   </div>
+                   <b-row v-for="employee in active_employees" v-bind:key="employee.id" class="collection-item">
+                      <div>
+                        <img :src="employee.image" alt="" class="avatar">
+                        <div class="chip">{{employee.dept}}</div>
+                         {{employee.employee_id}}:{{employee.name}}
+                        <router-link class="secondary-content" 
+                        v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
+                        <i class="fa fa-eye" aria-hidden="true"></i>
+                        </router-link>
+                      </div>
                   </b-row> 
                   
                 
@@ -26,8 +26,8 @@
                 <h3>Passive Employees</h3>
                  
 
-                   <b-row v-for="employee in employees" v-bind:key="employee.id"  class="collection-item">
-                      <div v-if="employee.status == 'passive'" class="col-ex">
+                   <b-row v-for="employee in passive_employees" v-bind:key="employee.id"  class="collection-item">
+                     <div>
                         <img :src="employee.image" alt="" class="avatar">
                         <div class="chip">{{employee.dept}}</div>
                         {{employee.employee_id}}:{{employee.name}}
@@ -35,7 +35,7 @@
                         v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
                         <i class="fa fa-eye" aria-hidden="true"></i>
                         </router-link>
-                      </div>
+                    </div>  
                     </b-row>     
 
                    
@@ -63,7 +63,8 @@ export default {
     name: "dashboard",
     data () {
         return {
-          employees: []
+          active_employees: [],
+          passive_employees: []
         }
     },
     created () {
@@ -79,7 +80,10 @@ export default {
             "image": doc.data().image,
             "status": doc.data().status
           }
-          this.employees.push(data)
+          if(data.status === "active") {
+            this.active_employees.push(data)
+          }
+          else {this.passive_employees.push(data)}
         })
       })
     }
