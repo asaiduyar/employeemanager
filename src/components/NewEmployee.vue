@@ -30,6 +30,20 @@
                     required>
                     <label>Position</label>
                 </div>
+              </div>  
+              <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" v-model="status"
+                    required>
+                    <label>(Active/Passive)</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" v-model="image"
+                    required>
+                    <label>(image url)</label>
+                </div>
               </div>
               <button type="submit" class="btn">Submit</button>
               <router-link to="/" class="btn grey">Cancel</router-link>
@@ -48,7 +62,9 @@ export default {
             employee_id: null,
             name: null,
             dept: null,
-            position: null
+            position: null,
+            status: null,
+            image: null
         }
     },
     methods: {
@@ -57,7 +73,9 @@ export default {
                 employee_id: this.employee_id,
                 name: this.name,
                 dept: this.dept,
-                position: this.position
+                position: this.position,
+                status: this.status,
+                image: this.image
             })
             .then(docRef => this.$router.push("/"))
             .catch(error => console.log(err))
