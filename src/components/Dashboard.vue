@@ -2,7 +2,6 @@
   <div id="dashboard">
       <ul class="collection with-header">
         
-          
           <b-container class="bv-example-row">
             <b-row>
               <b-col>
@@ -26,6 +25,7 @@
               <b-col>
                 <h3>Passive Employees</h3>
                  
+
                    <b-row v-for="employee in employees" v-bind:key="employee.id"  class="collection-item">
                       <div v-if="employee.status == 'passive'" class="col-ex">
                         <img :src="employee.image" alt="" class="avatar">
@@ -46,7 +46,6 @@
         
           
       </ul>
-
 
       <div class="fixed-action-btn">
           <router-link to="/new">

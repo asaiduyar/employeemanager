@@ -35,7 +35,7 @@
                 <div class="input-field col s12">
                     <input type="text" v-model="status"
                     required>
-                    <label>(Active/Passive)</label>
+                    <label>(active/passive)</label>
                 </div>
               </div>
               <div class="row">
