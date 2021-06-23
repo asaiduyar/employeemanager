@@ -2,13 +2,15 @@
   <div id="view-employee">
       <ul class="collection with-header">
           <li class="collection-header">
+              
               <h4>
-                  {{name}}
+                  <img :src="image" alt="" class="avatar">  {{name}}
               </h4>
           </li>
           <li class="collection-item">EmployeeID#: {{employee_id}}</li>
           <li class="collection-item">Department: {{dept}}</li>
           <li class="collection-item">Position: {{position}}</li>
+          <li class="collection-item">Status: {{status}}</li>
       </ul>
       <router-link to="/">
       <a href="#" class="waves-effect waves-light btn">Back</a>
@@ -36,7 +38,9 @@ export default {
             employee_id: null,
             name: null,
             dept: null,
-            position: null
+            position: null,
+            status: null,
+            image: null
         }
     },
     beforeRouteEnter (to, from, next) {
@@ -48,6 +52,8 @@ export default {
                      vm.name = doc.data().name
                      vm.dept = doc.data().dept
                      vm.position = doc.data().position
+                     vm.status = doc.data().status
+                     vm.image = doc.data().image
                  })
              })
          })
@@ -65,6 +71,8 @@ export default {
                     this.name = doc.data().name
                     this.dept = doc.data().dept
                     this.position = doc.data().position
+                    this.status = doc.data().status
+                    this.image = doc.data().image
                 })
             })
         },
@@ -87,5 +95,10 @@ export default {
 </script>
 
 <style>
-
+.avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50% ;
+  padding: auto;
+}
 </style>

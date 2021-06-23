@@ -31,6 +31,13 @@
                     
                 </div>
               </div>
+              <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" v-model="status"
+                    required>
+                    
+                </div>
+              </div>
               <button type="submit" class="btn">Submit</button>
               <router-link to="/" class="btn grey">Cancel</router-link>
           </form>
@@ -48,7 +55,9 @@ export default {
             employee_id: null,
             name: null,
             dept: null,
-            position: null
+            position: null,
+            status: null,
+            image: null
         }
     },
     beforeRouteEnter (to, from, next) {
@@ -60,6 +69,8 @@ export default {
                      vm.name = doc.data().name
                      vm.dept = doc.data().dept
                      vm.position = doc.data().position
+                     vm.status = doc.data().status
+                     vm.image = doc.data().image
                  })
              })
          })
@@ -77,6 +88,8 @@ export default {
                     this.name = doc.data().name
                     this.dept = doc.data().dept
                     this.position = doc.data().position
+                    this.status = doc.data().status
+                    this.image = doc.data().image
                 })
             })
         },
@@ -89,7 +102,8 @@ export default {
                         employee_id: this.employee_id,
                         name: this.name,
                         dept: this.dept,
-                        position: this.position
+                        position: this.position,
+                        status: this.status
                     })
                     .then(() => {
                         this.$router.push({name: "view-employee", params: {employee_id: this.employee_id}})
