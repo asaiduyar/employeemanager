@@ -66,12 +66,15 @@ export default {
             position: null,
             status: null,
             image: null,
-            regDate: null
+            regDate: null,
+            regTimeStamp: null
         }
     },
     methods: {
         saveEmployee () {
             var curDate = new Date().toLocaleString()
+            var curTimeStamp = Date.now()
+        
             db.collection("employees").add({
                 employee_id: this.employee_id,
                 name: this.name,
@@ -79,12 +82,15 @@ export default {
                 position: this.position,
                 status: this.status,
                 image: this.image,
-                regDate: curDate
+                regDate: curDate,
+                regTimeStamp: curTimeStamp
             })
             .then(docRef => this.$router.push("/"))
             .catch(error => console.log(err))
+            
         }
     }
+
 
 }
 </script>

@@ -1,7 +1,15 @@
 <template>
   <div id="dashboard">
+
+      <div>
+          <label for="example-datepicker">Filter after this</label>
+          <b-form-datepicker id="example-datepicker" v-model="filter_value" class="mb-2"></b-form-datepicker>
+          <p>Value: {{filter_value}} </p>
+      </div>
+
+
       <ul class="collection with-header">
-        
+
           <b-container class="bv-example-row">
             <b-row>
               <b-col>
@@ -38,7 +46,7 @@
                         {{employee.employee_id}}:{{employee.name}}
                      </div>
                      <div class="col-sm-4">
-                       <div style="font-size:12px">
+                       <div id="demo" style="font-size:12px">
                          {{employee.regDate}}
                        </div>
                        <router-link class="secondary-content" 
@@ -74,7 +82,10 @@ export default {
     data () {
         return {
           active_employees: [],
-          passive_employees: []
+          passive_employees: [],
+          date_val: null,
+          filteredActive: [],
+          filteredPassive: []
         }
     },
     created () {
@@ -89,7 +100,8 @@ export default {
             "position": doc.data().position,
             "image": doc.data().image,
             "status": doc.data().status,
-            "regDate": doc.data().regDate
+            "regDate": doc.data().regDate,
+            "regTimeStamp": doc.data().regTimeStamp
           }
           if(data.status === "active") {
             this.active_employees.push(data)

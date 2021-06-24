@@ -4,6 +4,9 @@ import Dashboard from '@/components/Dashboard'
 import ViewEmployee from '@/components/ViewEmployee'
 import EditEmployee from '@/components/EditEmployee'
 import NewEmployee from '@/components/NewEmployee'
+import VueFilterDateFormat from 'vue-filter-date-format';
+
+Vue.use(VueFilterDateFormat);
 
 Vue.use(Router)
 
