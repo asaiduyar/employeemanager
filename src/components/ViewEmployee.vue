@@ -7,10 +7,11 @@
                   <img :src="image" alt="" class="avatar">  {{name}}
               </h4>
           </li>
-          <li class="collection-item">EmployeeID#: {{employee_id}}</li>
-          <li class="collection-item">Department: {{dept}}</li>
-          <li class="collection-item">Position: {{position}}</li>
-          <li class="collection-item">Status: {{status}}</li>
+          <li class="collection-item"><strong>EmployeeID#:</strong> {{employee_id}}</li>
+          <li class="collection-item"><strong>Department:</strong> {{dept}}</li>
+          <li class="collection-item"><strong>Position:</strong> {{position}}</li>
+          <li class="collection-item"><strong>Status:</strong> {{status}}</li>
+          <li class="collection-item"><strong>Register Date:</strong> {{regDate}}</li>
       </ul>
       <router-link to="/">
       <a href="#" class="waves-effect waves-light btn">Back</a>
@@ -40,7 +41,8 @@ export default {
             dept: null,
             position: null,
             status: null,
-            image: null
+            image: null,
+            regDate: null
         }
     },
     beforeRouteEnter (to, from, next) {
@@ -54,6 +56,7 @@ export default {
                      vm.position = doc.data().position
                      vm.status = doc.data().status
                      vm.image = doc.data().image
+                     vm.regDate = doc.data().regDate
                  })
              })
          })
@@ -73,6 +76,7 @@ export default {
                     this.position = doc.data().position
                     this.status = doc.data().status
                     this.image = doc.data().image
+                    this.regDate = doc.data().regDate
                 })
             })
         },

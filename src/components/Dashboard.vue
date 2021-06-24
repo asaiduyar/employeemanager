@@ -8,15 +8,20 @@
                 <h3>Active Employees</h3>
                  
                    <b-row v-for="employee in active_employees" v-bind:key="employee.id" class="collection-item">
-                      <div>
-                        <img :src="employee.image" alt="" class="avatar">
-                        <div class="chip">{{employee.dept}}</div>
-                         {{employee.employee_id}}:{{employee.name}}
-                        <router-link class="secondary-content" 
-                        v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
-                        <i class="fa fa-eye" aria-hidden="true"></i>
-                        </router-link>
-                      </div>
+                        <div class="col-sm-8">
+                            <img :src="employee.image" alt="" class="avatar">
+                            <div class="chip">{{employee.dept}}</div>
+                            {{employee.employee_id}}:{{employee.name}}
+                         </div>
+                        <div class="col-sm-4">
+                          <div style="font-size:12px">
+                            {{employee.regDate}}
+                          </div>
+                            <router-link class="secondary-content" 
+                            v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                            </router-link>
+                        </div>
                   </b-row> 
                   
                 
@@ -27,16 +32,21 @@
                  
 
                    <b-row v-for="employee in passive_employees" v-bind:key="employee.id"  class="collection-item">
-                     <div>
+                     <div class="col-sm-8">
                         <img :src="employee.image" alt="" class="avatar">
                         <div class="chip">{{employee.dept}}</div>
                         {{employee.employee_id}}:{{employee.name}}
-                        <router-link class="secondary-content" 
+                     </div>
+                     <div class="col-sm-4">
+                       <div style="font-size:12px">
+                         {{employee.regDate}}
+                       </div>
+                       <router-link class="secondary-content" 
                         v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
                         <i class="fa fa-eye" aria-hidden="true"></i>
                         </router-link>
                     </div>  
-                    </b-row>     
+                  </b-row>     
 
                    
               </b-col>
@@ -78,7 +88,8 @@ export default {
             "dept": doc.data().dept,
             "position": doc.data().position,
             "image": doc.data().image,
-            "status": doc.data().status
+            "status": doc.data().status,
+            "regDate": doc.data().regDate
           }
           if(data.status === "active") {
             this.active_employees.push(data)
@@ -100,4 +111,5 @@ export default {
 .col-ex {
   padding-block-end: 10%;
 }
+
 </style>

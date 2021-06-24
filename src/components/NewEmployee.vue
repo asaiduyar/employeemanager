@@ -55,6 +55,7 @@
 
 <script>
 import db from "./firebaseInit"
+
 export default {
     name: "new-employee",
     data () {
@@ -64,18 +65,21 @@ export default {
             dept: null,
             position: null,
             status: null,
-            image: null
+            image: null,
+            regDate: null
         }
     },
     methods: {
         saveEmployee () {
+            var curDate = new Date().toLocaleString()
             db.collection("employees").add({
                 employee_id: this.employee_id,
                 name: this.name,
                 dept: this.dept,
                 position: this.position,
                 status: this.status,
-                image: this.image
+                image: this.image,
+                regDate: curDate
             })
             .then(docRef => this.$router.push("/"))
             .catch(error => console.log(err))
