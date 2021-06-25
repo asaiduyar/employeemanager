@@ -1,5 +1,13 @@
 <template>
-  <div id="dashboard">
+  <div id="dashboard" :key="componentKey">
+      
+      <div>
+  <b-tabs content-class="mt-3">
+    <b-tab title="First" active><p>I'm the first tab</p></b-tab>
+    <b-tab title="Second"><p>I'm the second tab</p></b-tab>
+    <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
+  </b-tabs>
+</div>
 
       <div>
           <label for="example-datepicker">Filter after this</label>
@@ -77,10 +85,12 @@
 
 <script>
 import db from "./firebaseInit"
+
 export default {
     name: "dashboard",
     data () {
         return {
+          componentKey: 0,
           active_employees: [],
           passive_employees: [],
           date_val: null,
@@ -89,6 +99,32 @@ export default {
         }
     },
     created () {
+
+        db.collection("employees").orderBy("dept").get().then
+      (querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const data = {
+            "id": doc.id,
+            "employee_id": doc.data().employee_id,
+            "name": doc.data().name,
+            "dept": doc.data().dept,
+            "position": doc.data().position,
+            "image": doc.data().image,
+            "status": doc.data().status,
+            "regDate": doc.data().regDate,
+            "regTimeStamp": doc.data().regTimeStamp
+          }
+          if(data.status === "active") {
+            this.active_employees.push(data)
+          }
+          else {this.passive_employees.push(data)}
+        })
+      })
+
+       window.setInterval(() => {
+    this.getNotifications(
+      this.active_employees = [],
+      this.passive_employees = [],
       db.collection("employees").orderBy("dept").get().then
       (querySnapshot => {
         querySnapshot.forEach(doc => {
@@ -109,6 +145,9 @@ export default {
           else {this.passive_employees.push(data)}
         })
       })
+    )
+  }, 30000)
+      
     }
 }
 </script>

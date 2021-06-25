@@ -6,6 +6,9 @@ import EditEmployee from '@/components/EditEmployee'
 import NewEmployee from '@/components/NewEmployee'
 import VueFilterDateFormat from 'vue-filter-date-format';
 
+
+
+Vue.config.productionTip = false
 Vue.use(VueFilterDateFormat);
 
 Vue.use(Router)
