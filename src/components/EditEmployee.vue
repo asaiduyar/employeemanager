@@ -33,9 +33,11 @@
               </div>
               <div class="row">
                 <div class="input-field col s12">
-                    <input type="text" v-model="status"
-                    required>
-                    
+                <select id="selection" class="form-select" aria-label="Default select example">
+                    <option selected>Select a Status</option>
+                    <option value="active">Active</option>
+                    <option value="passive">Passive</option>
+                </select>
                 </div>
               </div>
               <button type="submit" class="btn">Submit</button>
@@ -79,6 +81,7 @@ export default {
         "$route": "fetchData"
     },
     methods: {
+        
         fetchData () {
             db.collection("employees")
             .where("employee_id", "==", this.$route.params.employee_id).get()
@@ -94,6 +97,8 @@ export default {
             })
         },
         updateEmployee () {
+            var selection = document.getElementById("selection").value;
+
             db.collection("employees")
             .where("employee_id", "==", this.$route.params.employee_id).get()
             .then(querySnapshot => {
@@ -103,7 +108,7 @@ export default {
                         name: this.name,
                         dept: this.dept,
                         position: this.position,
-                        status: this.status
+                        status: selection
                     })
                     .then(() => {
                         this.$router.push({name: "view-employee", params: {employee_id: this.employee_id}})

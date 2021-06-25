@@ -32,11 +32,11 @@
                 </div>
               </div>  
               <div class="row">
-                <div class="input-field col s12">
-                    <input type="text" v-model="status"
-                    required>
-                    <label>(active/passive)</label>
-                </div>
+                <select id="selection" class="form-select" aria-label="Default select example">
+                    <option selected>Select a Status</option>
+                    <option value="active">Active</option>
+                    <option value="passive">Passive</option>
+                </select>
               </div>
               <div class="row">
                 <div class="input-field col s12">
@@ -74,13 +74,15 @@ export default {
         saveEmployee () {
             var curDate = new Date().toLocaleString()
             var curTimeStamp = Date.now()
-        
+
+            var selection = document.getElementById("selection").value;
+
             db.collection("employees").add({
                 employee_id: this.employee_id,
                 name: this.name,
                 dept: this.dept,
                 position: this.position,
-                status: this.status,
+                status: selection,
                 image: this.image,
                 regDate: curDate,
                 regTimeStamp: curTimeStamp
