@@ -2,12 +2,12 @@
   <div id="dashboard" :key="componentKey">
       
       <div>
-  <b-tabs content-class="mt-3">
-    <b-tab title="First" active><p>I'm the first tab</p></b-tab>
-    <b-tab title="Second"><p>I'm the second tab</p></b-tab>
-    <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
-  </b-tabs>
-</div>
+        <b-tabs content-class="mt-3">
+          <b-tab title="First" active><p>I'm the first tab</p></b-tab>
+          <b-tab title="Second"><p>I'm the second tab</p></b-tab>
+          <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
+        </b-tabs>
+      </div>
 
       <div>
           <label for="example-datepicker">Filter after this</label>
@@ -46,7 +46,6 @@
               <b-col>
                 <h3>Passive Employees</h3>
                  
-
                    <b-row v-for="employee in passive_employees" v-bind:key="employee.id"  class="collection-item">
                      <div class="col-sm-8">
                         <img :src="employee.image" alt="" class="avatar">
@@ -98,57 +97,37 @@ export default {
           filteredPassive: []
         }
     },
-    created () {
 
-        db.collection("employees").orderBy("dept").get().then
-      (querySnapshot => {
-        querySnapshot.forEach(doc => {
-          const data = {
-            "id": doc.id,
-            "employee_id": doc.data().employee_id,
-            "name": doc.data().name,
-            "dept": doc.data().dept,
-            "position": doc.data().position,
-            "image": doc.data().image,
-            "status": doc.data().status,
-            "regDate": doc.data().regDate,
-            "regTimeStamp": doc.data().regTimeStamp
-          }
-          if(data.status === "active") {
-            this.active_employees.push(data)
-          }
-          else {this.passive_employees.push(data)}
-        })
+    mounted () {
+        db.collection("employees").orderBy("dept").onSnapshot(snapshot => {
+          this.active_employees = []
+          this.passive_employees = []
+          snapshot.forEach(doc => {
+              const data = {
+                "id": doc.id,
+                "employee_id": doc.data().employee_id,
+                "name": doc.data().name,
+                "dept": doc.data().dept,
+                "position": doc.data().position,
+                "image": doc.data().image,
+                "status": doc.data().status,
+                "regDate": doc.data().regDate,
+                "regTimeStamp": doc.data().regTimeStamp
+             }
+            if(data.status === "active") {
+               this.active_employees.push(data)
+            }
+            else {this.passive_employees.push(data)}
+         })
       })
 
-       window.setInterval(() => {
-    this.getNotifications(
-      this.active_employees = [],
-      this.passive_employees = [],
-      db.collection("employees").orderBy("dept").get().then
-      (querySnapshot => {
-        querySnapshot.forEach(doc => {
-          const data = {
-            "id": doc.id,
-            "employee_id": doc.data().employee_id,
-            "name": doc.data().name,
-            "dept": doc.data().dept,
-            "position": doc.data().position,
-            "image": doc.data().image,
-            "status": doc.data().status,
-            "regDate": doc.data().regDate,
-            "regTimeStamp": doc.data().regTimeStamp
-          }
-          if(data.status === "active") {
-            this.active_employees.push(data)
-          }
-          else {this.passive_employees.push(data)}
-        })
-      })
-    )
-  }, 30000)
-      
+      forceRerender()
+    },
+
+    forceRerender () {
+      this.componentKey += 1;
     }
+
 }
 </script>
 
