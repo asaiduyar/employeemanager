@@ -1,29 +1,70 @@
 <template>
   <div id="dashboard" :key="componentKey">
-      
-      <div>
-        <b-tabs content-class="mt-3">
-          <b-tab title="First" active><p>I'm the first tab</p></b-tab>
-          <b-tab title="Second"><p>I'm the second tab</p></b-tab>
-          <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
-        </b-tabs>
-      </div>
+    
+    <b-container fluid class="bv-example-row">
+      <b-row>
+        <b-col cols="2">
+          <label for="after-input">Show Data(s) after this date</label>
+            <b-form-datepicker
+              id="after-input"
+              v-model="after_value"
+              right
+              locale="en-US"
+              aria-controls="after-input"
+              @context="onContext"
+              reset-button
+              size="sm"
+            ></b-form-datepicker>
+        </b-col>
+        <b-col cols="2">
+          <label for="after-input">Show Data(s) after this time</label>
+            <b-form-timepicker
+              id="timepicker-after"
+              v-model="after_value_time"
+              @context="onContext"
+              reset-button
+              locale="en"
+              size="sm"
+             ></b-form-timepicker>
+        </b-col>
+        <b-col>
 
-      <div>
-          <label for="example-datepicker">Filter after this</label>
-          <b-form-datepicker id="example-datepicker" v-model="filter_value" class="mb-2"></b-form-datepicker>
-          <p>Value: {{filter_value}} </p>
-      </div>
+        </b-col>
+        <b-col cols="2">
+          <label for="before-input">Show Data(s) before this date</label>
+            <b-form-datepicker
+              id="before-input"
+              v-model="before_value"
+              right
+              locale="en-US"
+              aria-controls="before-input"
+              @context="onContext"
+              reset-button
+              size="sm"
+            ></b-form-datepicker>
+        </b-col>
+        <b-col cols="2">
+          <label for="before-input">Show Data(s) before this time</label>
+            <b-form-timepicker
+              id="timepicker-before"
+              v-model="before_value_time"
+              @context="onContext"
+              reset-button
+              locale="en"
+              size="sm"
+             ></b-form-timepicker>
+        </b-col>
+      </b-row>
+    </b-container>
 
+      <a-tabs default-active-key="1" @change="callback">
 
-      <ul class="collection with-header">
+      <a-tab-pane key="1" tab="Active">
 
-          <b-container class="bv-example-row">
-            <b-row>
               <b-col>
                 <h3>Active Employees</h3>
-                 
-                   <b-row v-for="employee in active_employees" v-bind:key="employee.id" class="collection-item">
+                 <ul class="collection with-header">
+                   <b-row v-for="employee in filteredActive" v-bind:key="employee.id" class="collection-item">
                         <div class="col-sm-8">
                             <img :src="employee.image" alt="" class="avatar">
                             <div class="chip">{{employee.dept}}</div>
@@ -38,15 +79,17 @@
                             <i class="fa fa-eye" aria-hidden="true"></i>
                             </router-link>
                         </div>
-                  </b-row> 
-                  
-                
+                  </b-row>
+                </ul>
               </b-col>
-
+      </a-tab-pane>
+    
+      <a-tab-pane key="2" tab="Passive" force-render>
+        
               <b-col>
                 <h3>Passive Employees</h3>
-                 
-                   <b-row v-for="employee in passive_employees" v-bind:key="employee.id"  class="collection-item">
+                <ul class="collection with-header">
+                   <b-row v-for="employee in filteredPassive" v-bind:key="employee.id"  class="collection-item">
                      <div class="col-sm-8">
                         <img :src="employee.image" alt="" class="avatar">
                         <div class="chip">{{employee.dept}}</div>
@@ -61,16 +104,14 @@
                         <i class="fa fa-eye" aria-hidden="true"></i>
                         </router-link>
                     </div>  
-                  </b-row>     
-
-                   
+                  </b-row>   
+                 </ul>   
               </b-col>
+           
+      </a-tab-pane>
 
-            </b-row>
-          </b-container>
-        
-          
-      </ul>
+    </a-tabs>
+
 
       <div class="fixed-action-btn">
           <router-link to="/new">
@@ -84,6 +125,7 @@
 
 <script>
 import db from "./firebaseInit"
+import $ from 'jquery'
 
 export default {
     name: "dashboard",
@@ -92,13 +134,74 @@ export default {
           componentKey: 0,
           active_employees: [],
           passive_employees: [],
-          date_val: null,
           filteredActive: [],
-          filteredPassive: []
+          filteredPassive: [],
+          after_value: "",
+          before_value: "",
+          after_value_time: "",
+          before_value_time: "",
+        }
+    },
+
+
+    methods: {
+
+        //return time stamp milisecond
+        addTimetoDate(timestamp, hours, minutes) {
+            return (timestamp + (hours*3600000) + (minutes*60000) - 10800000)
+        },
+
+        onContext() {
+
+            var minutes_after = this.after_value_time.substring(3,5)
+            var hours_after = this.after_value_time.substring(0,2)
+            var minutes_before = this.before_value_time.substring(3,5)
+            var hours_before = this.before_value_time.substring(0,2)
+            
+            var after_timestamp = new Date(this.after_value).getTime()
+            var before_timestamp = new Date(this.before_value).getTime()
+
+            var after_timestamp_added = this.addTimetoDate(after_timestamp, hours_after, minutes_after)
+            var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
+
+
+            db.collection("employees").orderBy("dept").onSnapshot(snapshot => {
+             this.filteredActive = []
+             this.filteredPassive = []
+            snapshot.forEach(doc => {
+             const data = {
+                "id": doc.id,
+                "employee_id": doc.data().employee_id,
+                "name": doc.data().name,
+                "dept": doc.data().dept,
+                "position": doc.data().position,
+                "image": doc.data().image,
+                "status": doc.data().status,
+                "regDate": doc.data().regDate,
+                "regTimeStamp": doc.data().regTimeStamp
+             }
+            if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "active") {
+               this.filteredActive.push(data)
+            }
+            else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "passive"){
+               this.filteredPassive.push(data)}
+            })
+            
+        })
+    },
+
+      
+      forceRerender () {
+            this.componentKey += 1;
+    },
+
+      callback(key) {
+            console.log(key)
         }
     },
 
     mounted () {
+
         db.collection("employees").orderBy("dept").onSnapshot(snapshot => {
           this.active_employees = []
           this.passive_employees = []
@@ -120,12 +223,9 @@ export default {
             else {this.passive_employees.push(data)}
          })
       })
-
+      
       forceRerender()
-    },
-
-    forceRerender () {
-      this.componentKey += 1;
+      
     }
 
 }
