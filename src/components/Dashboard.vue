@@ -78,7 +78,7 @@
                           </b-col>  
                           <b-col>
                             <div>
-                              <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status)" pill variant="outline-danger" size="sm">Make-Passive</b-button>
+                              <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" pill variant="outline-danger" size="sm">Make-Passive</b-button>
                             </div>
                             <router-link class="secondary-content" 
                               v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
@@ -301,9 +301,18 @@ export default {
           
           var changeDate = new Date().toLocaleString()
           var changeTimeStamp = Date.now()
+          var oldstat = stat
+        
 
-  
-        if (stat == "active"){
+        db.collection("yedek").add({
+                "employee_id": emp_id,
+                "name": name,
+                "old-status": oldstat,
+                "changeDate": changeDate,
+                "changeTimeStamp": changeTimeStamp
+        })
+
+        if (oldstat == "active"){
           stat = "passive"
         }
         else {
@@ -319,14 +328,6 @@ export default {
                     })
                 })
             })
-        
-        db.collection("yedek").add({
-                "employee_id": emp_id,
-                "name": name,
-                "old-status": stat,
-                "changeDate": changeDate,
-                "changeTimeStamp": changeTimeStamp
-        })
 
     },
 

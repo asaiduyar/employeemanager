@@ -4,6 +4,7 @@
           <div class="container">
               <router-link to="/" class="brand-logo left">
               Employee Manager
+              </router-link>
           </div>
       </div>
   </nav>
