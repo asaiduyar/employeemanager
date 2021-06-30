@@ -109,10 +109,19 @@
               </b-col>
            
       </a-tab-pane>
-
     </a-tabs>
 
-
+<!--
+    <select name="LeaveType" @change="onContext()" class="form-control" v-model="selected_key">
+      <option disabled value="">Please select one</option>
+      <option value="-1">Hepsi</option>
+      <option value="2">2</option>
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+    </select>
+    <span>Selected: {{ selected_key }}</span>
+-->
       <div class="fixed-action-btn">
           <router-link to="/new">
             <a href="#" class="btn-floating btn-large waves-effect waves-light red">
@@ -140,6 +149,9 @@ export default {
           before_value: "",
           after_value_time: "",
           before_value_time: "",
+          selected_key: "",
+          count_active: 0,
+          count_passive: 0
         }
     },
 
@@ -153,6 +165,11 @@ export default {
 
         onContext() {
 
+            this.count_active = 0
+            this.count_passive = 0
+            var filterNum = this.selected_key
+            
+            
             var minutes_after = this.after_value_time.substring(3,5)
             var hours_after = this.after_value_time.substring(0,2)
             var minutes_before = this.before_value_time.substring(3,5)
@@ -166,9 +183,9 @@ export default {
 
 
             db.collection("employees").orderBy("dept").onSnapshot(snapshot => {
-             this.filteredActive = []
-             this.filteredPassive = []
             snapshot.forEach(doc => {
+                this.filteredActive = []
+                this.filteredPassive = []
              const data = {
                 "id": doc.id,
                 "employee_id": doc.data().employee_id,
@@ -180,14 +197,22 @@ export default {
                 "regDate": doc.data().regDate,
                 "regTimeStamp": doc.data().regTimeStamp
              }
-            if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "active") {
-               this.filteredActive.push(data)
-            }
-            else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "passive"){
-               this.filteredPassive.push(data)}
+            
+            
+               if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && (data.status == "active")) 
+                  {
+                     this.filteredActive.push(data)
+                  }
+               else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "passive")
+                 {
+                     this.filteredPassive.push(data)
+                 }
+            
+            
             })
             
         })
+          console.log(this.filteredActive)
     },
 
       
