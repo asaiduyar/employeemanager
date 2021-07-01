@@ -16,7 +16,7 @@
       <router-link to="/">
       <a href="#" class="waves-effect waves-light btn">Back</a>
       </router-link>
-      <button @click="deleteEmployee">
+      <button @click="deleteEmployee(employee_id, name, dept, position, status, image, regDate)">
           <i class="fa fa-eraser" aria-hidden="true"> Delete</i>
       </button>
 
@@ -43,7 +43,8 @@ export default {
             position: null,
             status: null,
             image: null,
-            regDate: null
+            regDate: null,
+            regTimeStamp: null
         }
     },
     beforeRouteEnter (to, from, next) {
@@ -81,8 +82,21 @@ export default {
                 })
             })
         },
-        deleteEmployee () {
+
+        deleteEmployee(employee_id, name, dept, position, status, image, regDate) {
             if (confirm("Are you sure?")) {
+
+                db.collection("deletedEmployeesYedek").add({
+                "employee_id": employee_id,
+                "name": name,
+                "status": status,
+                "regDate": regDate,
+                "dept": dept,
+                "positon": position,
+                "image": image
+            })
+                
+
                 db.collection("employees")
             .where("employee_id", "==", this.$route.params.employee_id).get()
             .then(querySnapshot => {

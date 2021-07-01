@@ -304,7 +304,7 @@ export default {
           var oldstat = stat
         
 
-        db.collection("yedek").add({
+        db.collection("statChangeYedek").add({
                 "employee_id": emp_id,
                 "name": name,
                 "old-status": oldstat,
