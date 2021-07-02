@@ -1,51 +1,52 @@
 <template>
   <div id="dashboard" :key="componentKey">
     
-    <b-container fluid class="bv-example-row">
-      <b-row>
-        <b-col cols="5" md="auto">
-          <label for="after-input" style="font-size:10px">Show Data(s) after this date</label>
-            <b-form-datepicker
-              id="after-input"
-              v-model="after_value"
-              right
-              locale="en-US"
-              aria-controls="after-input"
-              @context="onContext"
-              reset-button
-              size="sm"
-            ></b-form-datepicker>
-        </b-col>
-        <b-col cols="5" md="auto">
-          <label for="after-input" style="font-size:10px">Show Data(s) after this time</label>
-            <b-form-timepicker
-              id="timepicker-after"
-              v-model="after_value_time"
-              @context="onContext"
-              reset-button
-              locale="en"
-              size="sm"
-             ></b-form-timepicker>
-        </b-col>
-        <b-col>
-
-        </b-col>
-        <b-col cols="5" md="auto">
-          <label for="before-input" style="font-size:10px">Show Data(s) before this date</label>
-            <b-form-datepicker
-              id="before-input"
-              v-model="before_value"
-              right
-              locale="en-US"
-              aria-controls="before-input"
-              @context="onContext"
-              reset-button
-              size="sm"
-            ></b-form-datepicker>
-        </b-col>
-        <b-col cols="5" md="auto">
-          <label for="before-input" style="font-size:10px">Show Data(s) before this time</label>
-            <b-form-timepicker
+<div class="row">
+        <div class="col-md-3 ml-md-auto">
+          <a-menu v-model="current" mode="horizontal">
+            <a-sub-menu>
+              <span slot="title" class="submenu-title-wrapper">
+                <a-icon type="setting" />Zaman Aralığı
+              </span>
+              <a-menu-item-group title="Bundan sonra">
+                <a-menu-item>
+                  <b-form-datepicker
+                  id="after-input"
+                  v-model="after_value"
+                  right
+                  locale="en-US"
+                  aria-controls="after-input"
+                  @context="onContext"
+                  reset-button
+                  size="sm"
+                  ></b-form-datepicker>
+                </a-menu-item>  
+                <a-menu-item>
+                <b-form-timepicker
+                  id="timepicker-after"
+                  v-model="after_value_time"
+                  @context="onContext"
+                  reset-button
+                  locale="en"
+                  size="sm"
+                ></b-form-timepicker>
+                </a-menu-item>
+              </a-menu-item-group>
+              <a-menu-item-group title="Bundan önce">
+                <a-menu-item>
+                  <b-form-datepicker
+                  id="before-input"
+                  v-model="before_value"
+                  right
+                  locale="en-US"
+                  aria-controls="before-input"
+                  @context="onContext"
+                  reset-button
+                  size="sm"
+                  ></b-form-datepicker>
+                </a-menu-item>
+                <a-menu-item>
+                  <b-form-timepicker
               id="timepicker-before"
               v-model="before_value_time"
               @context="onContext"
@@ -53,10 +54,13 @@
               locale="en"
               size="sm"
              ></b-form-timepicker>
-        </b-col>
-      </b-row>
-    </b-container>
-
+                </a-menu-item>
+              </a-menu-item-group>
+            </a-sub-menu>
+          </a-menu>
+        </div>
+  </div>
+  
       <a-tabs default-active-key="1" @change="callback">
 
       <a-tab-pane key="1" tab="Active">
