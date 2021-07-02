@@ -1,52 +1,51 @@
 <template>
   <div id="dashboard" :key="componentKey">
     
-<div class="row">
-        <div class="col-md-3 ml-md-auto">
-          <a-menu v-model="current" mode="horizontal">
-            <a-sub-menu>
-              <span slot="title" class="submenu-title-wrapper">
-                <a-icon type="setting" />Zaman Aralığı
-              </span>
-              <a-menu-item-group title="Bundan sonra">
-                <a-menu-item>
-                  <b-form-datepicker
-                  id="after-input"
-                  v-model="after_value"
-                  right
-                  locale="en-US"
-                  aria-controls="after-input"
-                  @context="onContext"
-                  reset-button
-                  size="sm"
-                  ></b-form-datepicker>
-                </a-menu-item>  
-                <a-menu-item>
-                <b-form-timepicker
-                  id="timepicker-after"
-                  v-model="after_value_time"
-                  @context="onContext"
-                  reset-button
-                  locale="en"
-                  size="sm"
-                ></b-form-timepicker>
-                </a-menu-item>
-              </a-menu-item-group>
-              <a-menu-item-group title="Bundan önce">
-                <a-menu-item>
-                  <b-form-datepicker
-                  id="before-input"
-                  v-model="before_value"
-                  right
-                  locale="en-US"
-                  aria-controls="before-input"
-                  @context="onContext"
-                  reset-button
-                  size="sm"
-                  ></b-form-datepicker>
-                </a-menu-item>
-                <a-menu-item>
-                  <b-form-timepicker
+ <b-container fluid class="bv-example-row">
+      <b-row>
+        <b-col cols="5" md="auto">
+          <label for="after-input" style="font-size:10px">Show Data(s) after this date</label>
+            <b-form-datepicker
+              id="after-input"
+              v-model="after_value"
+              right
+              locale="en-US"
+              aria-controls="after-input"
+              @context="onContext"
+              reset-button
+              size="sm"
+            ></b-form-datepicker>
+        </b-col>
+        <b-col cols="5" md="auto">
+          <label for="after-input" style="font-size:10px">Show Data(s) after this time</label>
+            <b-form-timepicker
+              id="timepicker-after"
+              v-model="after_value_time"
+              @context="onContext"
+              reset-button
+              locale="en"
+              size="sm"
+             ></b-form-timepicker>
+        </b-col>
+        <b-col>
+
+        </b-col>
+        <b-col cols="5" md="auto">
+          <label for="before-input" style="font-size:10px">Show Data(s) before this date</label>
+            <b-form-datepicker
+              id="before-input"
+              v-model="before_value"
+              right
+              locale="en-US"
+              aria-controls="before-input"
+              @context="onContext"
+              reset-button
+              size="sm"
+            ></b-form-datepicker>
+        </b-col>
+        <b-col cols="5" md="auto">
+          <label for="before-input" style="font-size:10px">Show Data(s) before this time</label>
+            <b-form-timepicker
               id="timepicker-before"
               v-model="before_value_time"
               @context="onContext"
@@ -54,13 +53,10 @@
               locale="en"
               size="sm"
              ></b-form-timepicker>
-                </a-menu-item>
-              </a-menu-item-group>
-            </a-sub-menu>
-          </a-menu>
-        </div>
-  </div>
-  
+        </b-col>
+      </b-row>
+    </b-container>
+
       <a-tabs default-active-key="1" @change="callback">
 
       <a-tab-pane key="1" tab="Active">
@@ -84,11 +80,11 @@
                             <div>
                               <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" pill variant="outline-danger" size="sm">Make-Passive</b-button>
                             </div>
+                          </b-col>
                             <router-link class="secondary-content" 
                               v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
                               <i class="fa fa-eye" aria-hidden="true"></i>
                             </router-link>
-                          </b-col>
                        </div>
                   </b-row>
                 </ul>
@@ -107,21 +103,21 @@
                         {{employee.employee_id}}:{{employee.name}}
                      </div>
                      <div class="col-sm-4">
-                       <b-col>
-                          <div style="font-size:11px">
-                            {{employee.regDate}}
-                          </div>
-                       </b-col>  
-                       <b-col>
+                          <b-col>
+                              <div style="font-size:11px">
+                                {{employee.regDate}}
+                              </div>
+                          </b-col>  
+                          <b-col>
                             <div>
                               <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" pill variant="outline-danger" size="sm">Make-Active</b-button>
                             </div>
+                          </b-col>
                             <router-link class="secondary-content" 
                               v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
                               <i class="fa fa-eye" aria-hidden="true"></i>
                             </router-link>
-                          </b-col>
-                    </div>  
+                       </div>
                   </b-row>   
                  </ul>   
               </b-col>
@@ -213,7 +209,7 @@ export default {
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
 
-          db.collection(collection_name).orderBy("regTimeStamp").limit().onSnapshot(snapshot => {
+          db.collection(collection_name).orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
              this.filteredActive = []
              this.filteredPassive = []
             snapshot.forEach(doc => {
@@ -256,7 +252,7 @@ export default {
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
 
-          db.collection(collection_name).where("status", "==", "active").orderBy("regTimeStamp").limit(limit_size).onSnapshot(snapshot => {
+          db.collection(collection_name).where("status", "==", "active").orderBy("regTimeStamp", "desc").limit(limit_size).onSnapshot(snapshot => {
              this.filteredActive = []
             snapshot.forEach(doc => {
              const data = {
@@ -277,7 +273,7 @@ export default {
         })
       })
 
-          db.collection(collection_name).where("status", "==", "passive").orderBy("regTimeStamp").limit(limit_size).onSnapshot(snapshot => {
+          db.collection(collection_name).where("status", "==", "passive").orderBy("regTimeStamp", "desc").limit(limit_size).onSnapshot(snapshot => {
              this.filteredPassive = []
             snapshot.forEach(doc => {
              const data = {

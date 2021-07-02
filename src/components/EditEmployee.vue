@@ -31,15 +31,6 @@
                     
                 </div>
               </div>
-              <div class="row">
-                <div class="input-field col s12">
-                <select id="selection" class="form-select" aria-label="Default select example">
-                    <option selected>Select a Status</option>
-                    <option value="active">Active</option>
-                    <option value="passive">Passive</option>
-                </select>
-                </div>
-              </div>
               <button type="submit" class="btn">Submit</button>
               <router-link to="/" class="btn grey">Cancel</router-link>
           </form>
