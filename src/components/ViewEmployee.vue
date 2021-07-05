@@ -16,8 +16,8 @@
       <router-link to="/">
       <a href="#" class="waves-effect waves-light btn">Back</a>
       </router-link>
-      <button @click="deleteEmployee(employee_id, name, dept, position, status, image, regDate)">
-          <i class="fa fa-eraser" aria-hidden="true"> Delete</i>
+      <button @click="deleteEmployee(employee_id, name, dept, position, status, image, regDate)" class="waves-effect waves-light btn">
+          Delete
       </button>
 
       <div class="fixed-action-btn">

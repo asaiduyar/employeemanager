@@ -2,7 +2,9 @@
   <div id="app">
     <Navbar />
     <div class="container">
-      <router-view/>
+      <keep-alive include="dashboard">
+      <router-view></router-view>
+    </keep-alive>
     </div>
   </div>
 </template>

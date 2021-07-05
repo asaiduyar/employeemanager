@@ -57,7 +57,7 @@
       </b-row>
     </b-container>
 
-      <a-tabs default-active-key="1" @change="callback">
+      <a-tabs default-active-key="1">
 
       <a-tab-pane key="1" tab="Active">
 
@@ -130,7 +130,7 @@
          <select name="LeaveType" @change="onContext()" class="form-control" v-model="selected_key">
           <option disabled value="">Göster (adet)</option>
           <option value="-1">Hepsi</option>
-          <option value="2">2</option>
+          <option value="3">3</option>
           <option value="10">10</option>
           <option value="20">20</option>
           <option value="50">50</option>
@@ -151,6 +151,7 @@
 <script>
 import db from "./firebaseInit"
 import $ from 'jquery'
+import { mapGetters } from "vuex"
 
 export default {
     name: "dashboard",
@@ -171,6 +172,8 @@ export default {
     },
 
 
+    
+
     methods: {
 
         //return time stamp milisecond
@@ -182,21 +185,21 @@ export default {
 
             var limit_size = this.selected_key
             var collection_name = "employees"
-
+            console.log("OnContexte")
             if (limit_size < 0 || limit_size == ""){
 
                 this.writeFS(collection_name)
             }
             else if (limit_size >= 1) {
 
-              this.writeFSLimit(collection_name, limit_size)
+              this.writeFSLimit(collection_name, this.selected_key)
+              console.log(this.selected_key)
             }
             
     },
 
 
        writeFS (collection_name) {
-
             var minutes_after = this.after_value_time.substring(3,5)
             var hours_after = this.after_value_time.substring(0,2)
             var minutes_before = this.before_value_time.substring(3,5)
@@ -209,7 +212,7 @@ export default {
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
 
-          db.collection(collection_name).orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
+          db.collection(collection_name).where("status","==","active").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
              this.filteredActive = []
              this.filteredPassive = []
             snapshot.forEach(doc => {
@@ -225,15 +228,34 @@ export default {
                 "regTimeStamp": doc.data().regTimeStamp
              }
              
-            if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "active") {
+            if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)) {
                this.filteredActive.push(data)
             }
             else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "passive"){
                this.filteredPassive.push(data)}
             })
-            
         })
 
+        db.collection(collection_name).where("status","==","passive").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
+            this.filteredPassive = []
+            snapshot.forEach(doc => {
+             const data = {
+                "id": doc.id,
+                "employee_id": doc.data().employee_id,
+                "name": doc.data().name,
+                "dept": doc.data().dept,
+                "position": doc.data().position,
+                "image": doc.data().image,
+                "status": doc.data().status,
+                "regDate": doc.data().regDate,
+                "regTimeStamp": doc.data().regTimeStamp
+             }
+             
+            if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)){
+               this.filteredPassive.push(data)}
+            })
+        })
+        
        },
 
 
@@ -251,10 +273,13 @@ export default {
             var after_timestamp_added = this.addTimetoDate(after_timestamp, hours_after, minutes_after)
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
+            var act_lim_query = db.collection(collection_name).where("status", "==", "active")
+            var pas_lim_query = db.collection(collection_name).where("status", "==", "passive")
 
-          db.collection(collection_name).where("status", "==", "active").orderBy("regTimeStamp", "desc").limit(limit_size).onSnapshot(snapshot => {
+            act_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
              this.filteredActive = []
             snapshot.forEach(doc => {
+              console.log(doc.data().name)
              const data = {
                 "id": doc.id,
                 "employee_id": doc.data().employee_id,
@@ -273,7 +298,7 @@ export default {
         })
       })
 
-          db.collection(collection_name).where("status", "==", "passive").orderBy("regTimeStamp", "desc").limit(limit_size).onSnapshot(snapshot => {
+          pas_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).onSnapshot(snapshot => {
              this.filteredPassive = []
             snapshot.forEach(doc => {
              const data = {
@@ -293,7 +318,7 @@ export default {
             }
         })
       })
-        
+
        }, 
  
        
@@ -328,14 +353,9 @@ export default {
                     })
                 })
             })
-
     },
 
-
-      callback(key) {
-            console.log(key)
-        }
-    }
+  }
 
 }
 </script>
