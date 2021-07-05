@@ -193,7 +193,7 @@ export default {
             else if (limit_size >= 1) {
 
               this.writeFSLimit(collection_name, this.selected_key)
-              console.log(this.selected_key)
+              
             }
             
     },
@@ -215,7 +215,13 @@ export default {
           db.collection(collection_name).where("status","==","active").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
              this.filteredActive = []
              this.filteredPassive = []
+
+             if(this.selected_key >= 1 ){
+              this.writeFSLimit(collection_name, this.selected_key)
+              }
+            else {
             snapshot.forEach(doc => {
+
              const data = {
                 "id": doc.id,
                 "employee_id": doc.data().employee_id,
@@ -233,12 +239,19 @@ export default {
             }
             else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "passive"){
                this.filteredPassive.push(data)}
-            })
-        })
+           })
+          }
+      })
 
         db.collection(collection_name).where("status","==","passive").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
             this.filteredPassive = []
+ 
+            if(this.selected_key >= 1 ){
+              this.writeFSLimit(collection_name, this.selected_key)
+              }
+            else {
             snapshot.forEach(doc => {
+
              const data = {
                 "id": doc.id,
                 "employee_id": doc.data().employee_id,
@@ -254,6 +267,7 @@ export default {
             if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)){
                this.filteredPassive.push(data)}
             })
+          }
         })
         
        },
@@ -278,8 +292,9 @@ export default {
 
             act_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
              this.filteredActive = []
+ 
             snapshot.forEach(doc => {
-              console.log(doc.data().name)
+
              const data = {
                 "id": doc.id,
                 "employee_id": doc.data().employee_id,
@@ -296,11 +311,14 @@ export default {
                this.filteredActive.push(data)
             }
         })
+          
       })
 
-          pas_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).onSnapshot(snapshot => {
+          pas_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
              this.filteredPassive = []
+
             snapshot.forEach(doc => {
+  
              const data = {
                 "id": doc.id,
                 "employee_id": doc.data().employee_id,
