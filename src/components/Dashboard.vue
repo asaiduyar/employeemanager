@@ -202,6 +202,7 @@ export default {
             }
             else if (limit_size >= 1) {
               
+
               this.writeFSLimit(collection_name, this.selected_key)
               
             }
@@ -242,7 +243,7 @@ export default {
                 "Date": doc.data().Date,
                 "regTimeStamp": doc.data().regTimeStamp
              }
-            if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)) {
+            if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.anormaly_status == "normal") {
                this.filteredNormal.push(data)
             }
             else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.anormaly_status == "anormal"){
@@ -299,7 +300,7 @@ export default {
             var normal_lim_query = db.collection(collection_name).where("anormaly_status", "==", "normal")
 
             anormal_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
-             this.filteredNormal = []
+             this.filteredAnormal = []
  
             snapshot.forEach(doc => {
 
@@ -316,14 +317,14 @@ export default {
              }
              
             if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)) {
-               this.filteredNormal.push(data)
+               this.filteredAnormal.push(data)
             }
         })
           
       })
 
           normal_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
-             this.filteredAnormal = []
+             this.filteredNormal = []
 
             snapshot.forEach(doc => {
   
@@ -340,7 +341,7 @@ export default {
              }
              
             if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)) {
-               this.filteredAnormal.push(data)
+               this.filteredNormal.push(data)
             }
         })
       })
