@@ -1,6 +1,7 @@
 <template>
   <div id="dashboard" :key="componentKey">
     
+
  <b-container fluid class="bv-example-row">
       <b-row>
         <b-col cols="5" md="auto">
@@ -58,70 +59,91 @@
     </b-container>
 
       <a-tabs default-active-key="1">
-
-      <a-tab-pane key="1" tab="Active">
-
-              <b-col>
-                <h3>Active Employees</h3>
-                 <ul class="collection with-header">
-                   <b-row v-for="employee in filteredActive" v-bind:key="employee.id" class="collection-item">
-                        <div class="col-sm-8">
-                            <img :src="employee.image" alt="" class="avatar">
-                            <div class="chip">{{employee.dept}}</div>
-                            {{employee.employee_id}}:{{employee.name}}
-                         </div>
-                        <div class="col-sm-4">
-                          <b-col>
-                              <div style="font-size:11px">
-                                {{employee.regDate}}
-                              </div>
-                          </b-col>  
-                          <b-col>
-                            <div>
-                              <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" pill variant="outline-danger" size="sm">Make-Passive</b-button>
-                            </div>
-                          </b-col>
-                            <router-link class="secondary-content" 
+      <a-tab-pane key="1" tab="Normal">
+        <b-col>
+            <h3 style="font-family: 'Times New Roman', serif">NORMAL</h3>
+            <b-card-group>
+              <div v-for="employee in filteredActive" v-bind:key="employee.id">
+                <b-card
+                style="max-width: 22rem;" 
+                class="m-3"
+                tag="article"
+                >
+                  <router-link class="secondary-content" 
                               v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
-                              <i class="fa fa-eye" aria-hidden="true"></i>
-                            </router-link>
-                       </div>
-                  </b-row>
-                </ul>
-              </b-col>
+                  <b-card-img 
+                  :src="employee.image" 
+                  :title="employee.id" 
+                  :alt="employee.id" 
+                  img-top width="400" 
+                  height="300"
+                  >
+                  </b-card-img>
+                  <hr>
+                </router-link>
+                  <hr>
+                  <h5 style="font-family: 'Times New Roman', serif;">{{employee.regDate}}</h5>
+                  <h6>{{employee.employee_id}} : {{employee.name}}</h6>
+                  <br>
+                    <b-row align-h="between">
+                      <b-col cols="8">
+                        <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" block variant="outline-danger" size="sm">Make-Passive</b-button>
+                      </b-col>
+                      <b-col cols="4">
+                        <router-link class="secondary-content" 
+                              v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
+                               <b-button block variant="outline-primary">View</b-button>
+                        </router-link>
+                      </b-col>
+                    </b-row>
+                </b-card>
+              </div>               
+            </b-card-group>
+        </b-col>
       </a-tab-pane>
     
-      <a-tab-pane key="2" tab="Passive" force-render>
-        
+      <a-tab-pane key="2" tab="Anormal" force-render>
+
               <b-col>
-                <h3>Passive Employees</h3>
-                <ul class="collection with-header">
-                   <b-row v-for="employee in filteredPassive" v-bind:key="employee.id"  class="collection-item">
-                     <div class="col-sm-8">
-                        <img :src="employee.image" alt="" class="avatar">
-                        <div class="chip">{{employee.dept}}</div>
-                        {{employee.employee_id}}:{{employee.name}}
-                     </div>
-                     <div class="col-sm-4">
-                          <b-col>
-                              <div style="font-size:11px">
-                                {{employee.regDate}}
-                              </div>
-                          </b-col>  
-                          <b-col>
-                            <div>
-                              <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" pill variant="outline-danger" size="sm">Make-Active</b-button>
-                            </div>
-                          </b-col>
-                            <router-link class="secondary-content" 
+            <h3 style="font-family: 'Times New Roman', serif">ANORMAL</h3>
+            <b-card-group>
+              <div v-for="employee in filteredPassive" v-bind:key="employee.id">
+                <b-card
+                style="max-width: 22rem;" 
+                class="m-3"
+                tag="article"
+
+                >
+                <router-link class="secondary-content" 
                               v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
-                              <i class="fa fa-eye" aria-hidden="true"></i>
-                            </router-link>
-                       </div>
-                  </b-row>   
-                 </ul>   
-              </b-col>
-           
+                  <b-card-img 
+                  :src="employee.image" 
+                  :title="employee.id" 
+                  :alt="employee.id" 
+                  img-top width="400" 
+                  height="300"
+                  >
+                  </b-card-img>
+                  <hr>
+                </router-link>
+                  <h5 style="font-family: 'Times New Roman', serif;">{{employee.regDate}}</h5>
+                  <h6>{{employee.employee_id}} : {{employee.name}}</h6>
+                  <br>
+                    <b-row align-h="between">
+                      <b-col cols="8">
+                        <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" block variant="outline-danger" size="sm">Make-Active</b-button>
+                      </b-col>
+                      <b-col cols="4">
+                        <router-link class="secondary-content" 
+                              v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
+                               <b-button block variant="outline-primary">View</b-button>
+                        </router-link>
+                      </b-col>
+                    </b-row>
+                </b-card>
+              </div>               
+            </b-card-group>
+        </b-col>
       </a-tab-pane>
 
     </a-tabs>

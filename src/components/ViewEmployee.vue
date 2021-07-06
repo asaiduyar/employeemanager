@@ -1,24 +1,37 @@
 <template>
   <div id="view-employee">
       <ul class="collection with-header">
+          <b-row>
+              <b-col>
           <li class="collection-header">
               
-              <h4>
-                  <img :src="image" alt="" class="avatar">  {{name}}
-              </h4>
+            <img 
+                  :src="image"  
+                  alt="" 
+                  width="600" 
+                  height="600"
+                 >
           </li>
+              </b-col>
+              <b-col>
+                  <br>
           <li class="collection-item"><strong>EmployeeID#:</strong> {{employee_id}}</li>
           <li class="collection-item"><strong>Department:</strong> {{dept}}</li>
           <li class="collection-item"><strong>Position:</strong> {{position}}</li>
           <li class="collection-item"><strong>Status:</strong> {{status}}</li>
           <li class="collection-item"><strong>Register Date:</strong> {{regDate}}</li>
-      </ul>
-      <router-link to="/">
-      <a href="#" class="waves-effect waves-light btn">Back</a>
+          <br>
+          <router-link to="/">
+      <a href="#">
+          <b-button variant="outline-primary">Back</b-button>
+      </a>
       </router-link>
-      <button @click="deleteEmployee(employee_id, name, dept, position, status, image, regDate)" class="waves-effect waves-light btn">
+      <b-button @click="deleteEmployee(employee_id, name, dept, position, status, image, regDate)" variant="outline-danger">
           Delete
-      </button>
+      </b-button>
+              </b-col>
+          </b-row>
+      </ul>
 
       <div class="fixed-action-btn">
           <router-link v-bind:to="{ name: 'edit-employee', params: {employee_id: employee_id} }">
