@@ -1,34 +1,57 @@
 <template>
   <div id="edit-employee">
-      <h3>Edit Employee</h3>
+      <hr>
+      <h3>Edit Datas</h3>
+      <hr>
       <div class="row">
           <form @submit.prevent="updateEmployee" class="col s12">
               <div class="row">
                 <div class="input-field col s12">
-                    <input disabled type="text" v-model="employee_id"
+                    <strong>Data ID Number</strong>
+                    <input disabled type="text" v-model="data_id"
                     required>
                     
                 </div>
               </div>
               <div class="row">
                 <div class="input-field col s12">
-                    <input type="text" v-model="name"
+                   <strong>Domain Image URL</strong> 
+                    <input type="text" v-model="domain_imgurl" placeholder="Domain Image URL"
                     required>
                     
                 </div>
               </div>
               <div class="row">
                 <div class="input-field col s12">
-                    <input type="text" v-model="dept"
+                   <strong>Sub Image URL</strong> 
+                    <input type="text" v-model="sub_imgurl" placeholder="Sub Image URL"
                     required>
                    
                 </div>
               </div>
               <div class="row">
                 <div class="input-field col s12">
-                    <input type="text" v-model="position"
+                   <strong>Sub Row Number</strong> 
+                    <input type="text" v-model="subrownum" placeholder="Sub Row Number"
                     required>
                     
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                    <strong>Sub Column Number</strong>
+                    <input type="text" v-model="subcolnum" placeholder="Sub Column Number"
+                    required>
+                    
+                </div>
+              </div>
+              <div class="row">
+                <div class="input-field col s12">
+                <strong>Select a Status</strong>
+                <select id="selection" class="form-select" aria-label="Default select example">
+                    <option value="normal">Normal</option>
+                    <option value="anormal">Anormal</option>
+                </select>
                 </div>
               </div>
               <button type="submit" class="btn">Submit</button>
@@ -45,25 +68,25 @@ export default {
     name: "edit-employee",
     data () {
         return {
-            employee_id: null,
-            name: null,
-            dept: null,
-            position: null,
-            status: null,
-            image: null
+            data_id: null,
+            domain_imgurl: null,
+            sub_imgurl: null,
+            subrownum: null,
+            subcolnum: null,
+            anormaly_status: null
         }
     },
     beforeRouteEnter (to, from, next) {
-        db.collection("employees").where("employee_id", "==", to.params.employee_id).get()
+        db.collection("employees").where("data_id", "==", to.params.data_id).get()
          .then(querySnapshot => {
              querySnapshot.forEach(doc => {
                  next(vm => {
-                     vm.employee_id = doc.data().employee_id
-                     vm.name = doc.data().name
-                     vm.dept = doc.data().dept
-                     vm.position = doc.data().position
-                     vm.status = doc.data().status
-                     vm.image = doc.data().image
+                     vm.data_id = doc.id
+                     vm.sub_imgurl = doc.data().sub_imgurl
+                     vm.domain_imgurl = doc.data().domain_imgurl
+                     vm.subrownum = doc.data().subrownum
+                     vm.subcolnum = doc.data().subcolnum
+                     vm.anormaly_status = doc.data().anormaly_status
                  })
              })
          })
@@ -75,15 +98,15 @@ export default {
         
         fetchData () {
             db.collection("employees")
-            .where("employee_id", "==", this.$route.params.employee_id).get()
+            .where("data_id", "==", this.$route.params.data_id).get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {
-                    this.employee_id = doc.data().employee_id
-                    this.name = doc.data().name
-                    this.dept = doc.data().dept
-                    this.position = doc.data().position
-                    this.status = doc.data().status
-                    this.image = doc.data().image
+                    this.data_id = doc.id
+                    this.domain_imgurl = doc.data().domain_imgurl
+                    this.sub_imgurl = doc.data().sub_imgurl
+                    this.subrownum = doc.data().subrownum
+                    this.subcolnum = doc.data().subcolnum
+                    this.anormaly_status = doc.data().anormaly_status
                 })
             })
         },
@@ -91,18 +114,19 @@ export default {
             var selection = document.getElementById("selection").value;
 
             db.collection("employees")
-            .where("employee_id", "==", this.$route.params.employee_id).get()
+            .where("data_id", "==", this.$route.params.data_id).get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     doc.ref.update({
-                        employee_id: this.employee_id,
-                        name: this.name,
-                        dept: this.dept,
-                        position: this.position,
-                        status: selection
+                        data_id: this.data_id,
+                        domain_imgurl: this.domain_imgurl,
+                        sub_imgurl: this.sub_imgurl,
+                        subrownum: this.subrownum,
+                        subcolnum: this.subcolnum,
+                        anormaly_status: selection
                     })
                     .then(() => {
-                        this.$router.push({name: "view-employee", params: {employee_id: this.employee_id}})
+                        this.$router.push({name: "view-employee", params: {data_id: this.data_id}})
                     })
                 })
             })

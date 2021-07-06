@@ -63,18 +63,18 @@
         <b-col>
             <h3 style="font-family: 'Times New Roman', serif">NORMAL</h3>
             <b-card-group>
-              <div v-for="employee in filteredActive" v-bind:key="employee.id">
+              <div v-for="data in filteredNormal" v-bind:key="data.data_id">
                 <b-card
                 style="max-width: 22rem;" 
                 class="m-3"
                 tag="article"
                 >
                   <router-link class="secondary-content" 
-                              v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
+                              v-bind:to="{name: 'view-employee', params: {data_id: data.data_id}}">
                   <b-card-img 
-                  :src="employee.image" 
-                  :title="employee.id" 
-                  :alt="employee.id" 
+                  :src="data.domain_imgurl" 
+                  :title="data.data_id" 
+                  :alt="data.data_id" 
                   img-top width="400" 
                   height="300"
                   >
@@ -82,16 +82,15 @@
                   <hr>
                 </router-link>
                   <hr>
-                  <h5 style="font-family: 'Times New Roman', serif;">{{employee.regDate}}</h5>
-                  <h6>{{employee.employee_id}} : {{employee.name}}</h6>
+                  <h5 style="font-family: 'Times New Roman', serif;">{{data.Date}}</h5>
+                  <h6>{{data.rc_loss}}</h6>
                   <br>
                     <b-row align-h="between">
                       <b-col cols="8">
-                        <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" block variant="outline-danger" size="sm">Make-Passive</b-button>
+                        <b-button v-on:click="makeChangeStat(data.data_id, data.anormaly_status)" block variant="outline-danger" size="sm">Make-Anormal</b-button>
                       </b-col>
                       <b-col cols="4">
-                        <router-link class="secondary-content" 
-                              v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
+                        <router-link v-bind:to="{name: 'view-employee', params: {data_id: data.data_id}}">
                                <b-button block variant="outline-primary">View</b-button>
                         </router-link>
                       </b-col>
@@ -107,7 +106,7 @@
               <b-col>
             <h3 style="font-family: 'Times New Roman', serif">ANORMAL</h3>
             <b-card-group>
-              <div v-for="employee in filteredPassive" v-bind:key="employee.id">
+              <div v-for="data in filteredAnormal" v-bind:key="data.data_id">
                 <b-card
                 style="max-width: 22rem;" 
                 class="m-3"
@@ -115,27 +114,27 @@
 
                 >
                 <router-link class="secondary-content" 
-                              v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
+                              v-bind:to="{name: 'view-employee', params: {data_id: data.data_id}}">
                   <b-card-img 
-                  :src="employee.image" 
-                  :title="employee.id" 
-                  :alt="employee.id" 
+                  :src="data.domain_imgurl" 
+                  :title="data.data_id" 
+                  :alt="data.data_id" 
                   img-top width="400" 
                   height="300"
                   >
                   </b-card-img>
                   <hr>
                 </router-link>
-                  <h5 style="font-family: 'Times New Roman', serif;">{{employee.regDate}}</h5>
-                  <h6>{{employee.employee_id}} : {{employee.name}}</h6>
+                  <h5 style="font-family: 'Times New Roman', serif;">{{data.Date}}</h5>
+                  <h6>{{data.rc_loss}}</h6>
                   <br>
                     <b-row align-h="between">
                       <b-col cols="8">
-                        <b-button v-on:click="makeChangeStat(employee.employee_id, employee.status, employee.name)" block variant="outline-danger" size="sm">Make-Active</b-button>
+                        <b-button v-on:click="makeChangeStat(data.data_id, data.anormaly_status)" block variant="outline-danger" size="sm">Make-Normal</b-button>
                       </b-col>
                       <b-col cols="4">
                         <router-link class="secondary-content" 
-                              v-bind:to="{name: 'view-employee', params: {employee_id: employee.employee_id}}">
+                              v-bind:to="{name: 'view-employee', params: {data_id: data.data_id}}">
                                <b-button block variant="outline-primary">View</b-button>
                         </router-link>
                       </b-col>
@@ -160,20 +159,11 @@
       </b-col>
     </b-row>
 
-      <div class="fixed-action-btn">
-          <router-link to="/new">
-            <a href="#" class="btn-floating btn-large waves-effect waves-light red">
-              <i class="fa fa-plus" title="Add New Employee"></i>
-              </a>
-          </router-link>
-      </div>
   </div>
 </template>
 
 <script>
 import db from "./firebaseInit"
-import $ from 'jquery'
-import { mapGetters } from "vuex"
 
 export default {
     name: "dashboard",
@@ -181,15 +171,13 @@ export default {
     data () {
         return {
           componentKey: 0,
-          filteredActive: [],
-          filteredPassive: [],
+          filteredNormal: [],
+          filteredAnormal: [],
           after_value: "",
           before_value: "",
           after_value_time: "",
           before_value_time: "",
-          selected_key: "",
-          spec_employee: null,
-          temp: []
+          selected_key: ""
         }
     },
 
@@ -207,13 +195,13 @@ export default {
 
             var limit_size = this.selected_key
             var collection_name = "employees"
-            console.log("OnContexte")
+            
             if (limit_size < 0 || limit_size == ""){
-
+                
                 this.writeFS(collection_name)
             }
             else if (limit_size >= 1) {
-
+              
               this.writeFSLimit(collection_name, this.selected_key)
               
             }
@@ -234,10 +222,9 @@ export default {
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
 
-          db.collection(collection_name).where("status","==","active").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
-             this.filteredActive = []
-             this.filteredPassive = []
-
+          db.collection(collection_name).where("anormaly_status","==","normal").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
+             this.filteredNormal = []
+             this.filteredAnormal = []
              if(this.selected_key >= 1 ){
               this.writeFSLimit(collection_name, this.selected_key)
               }
@@ -245,28 +232,27 @@ export default {
             snapshot.forEach(doc => {
 
              const data = {
-                "id": doc.id,
-                "employee_id": doc.data().employee_id,
-                "name": doc.data().name,
-                "dept": doc.data().dept,
-                "position": doc.data().position,
-                "image": doc.data().image,
-                "status": doc.data().status,
-                "regDate": doc.data().regDate,
+                "data_id": doc.id,
+                "domain_imgurl": doc.data().domain_imgurl,
+                "sub_imgurl": doc.data().sub_imgurl,
+                "subrownum": doc.data().subrownum,
+                "subcolnum": doc.data().subcolnum,
+                "anormaly_status": doc.data().anormaly_status,
+                "rc_loss": doc.data().rc_loss,
+                "Date": doc.data().Date,
                 "regTimeStamp": doc.data().regTimeStamp
              }
-             
             if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)) {
-               this.filteredActive.push(data)
+               this.filteredNormal.push(data)
             }
-            else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.status == "passive"){
-               this.filteredPassive.push(data)}
+            else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.anormaly_status == "anormal"){
+               this.filteredAnormal.push(data)}
            })
           }
       })
 
-        db.collection(collection_name).where("status","==","passive").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
-            this.filteredPassive = []
+        db.collection(collection_name).where("anormaly_status","==","anormal").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
+            this.filteredAnormal = []
  
             if(this.selected_key >= 1 ){
               this.writeFSLimit(collection_name, this.selected_key)
@@ -275,19 +261,19 @@ export default {
             snapshot.forEach(doc => {
 
              const data = {
-                "id": doc.id,
-                "employee_id": doc.data().employee_id,
-                "name": doc.data().name,
-                "dept": doc.data().dept,
-                "position": doc.data().position,
-                "image": doc.data().image,
-                "status": doc.data().status,
-                "regDate": doc.data().regDate,
+                "data_id": doc.id,
+                "domain_imgurl": doc.data().domain_imgurl,
+                "sub_imgurl": doc.data().sub_imgurl,
+                "subrownum": doc.data().subrownum,
+                "subcolnum": doc.data().subcolnum,
+                "anormaly_status": doc.data().anormaly_status,
+                "rc_loss": doc.data().rc_loss,
+                "Date": doc.data().Date,
                 "regTimeStamp": doc.data().regTimeStamp
              }
              
             if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)){
-               this.filteredPassive.push(data)}
+               this.filteredAnormal.push(data)}
             })
           }
         })
@@ -309,52 +295,52 @@ export default {
             var after_timestamp_added = this.addTimetoDate(after_timestamp, hours_after, minutes_after)
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
-            var act_lim_query = db.collection(collection_name).where("status", "==", "active")
-            var pas_lim_query = db.collection(collection_name).where("status", "==", "passive")
+            var anormal_lim_query = db.collection(collection_name).where("anormaly_status", "==", "anormal")
+            var normal_lim_query = db.collection(collection_name).where("anormaly_status", "==", "normal")
 
-            act_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
-             this.filteredActive = []
+            anormal_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
+             this.filteredNormal = []
  
             snapshot.forEach(doc => {
 
              const data = {
-                "id": doc.id,
-                "employee_id": doc.data().employee_id,
-                "name": doc.data().name,
-                "dept": doc.data().dept,
-                "position": doc.data().position,
-                "image": doc.data().image,
-                "status": doc.data().status,
-                "regDate": doc.data().regDate,
+                "data_id": doc.id,
+                "domain_imgurl": doc.data().domain_imgurl,
+                "sub_imgurl": doc.data().sub_imgurl,
+                "subrownum": doc.data().subrownum,
+                "subcolnum": doc.data().subcolnum,
+                "anormaly_status": doc.data().anormaly_status,
+                "rc_loss": doc.data().rc_loss,
+                "Date": doc.data().Date,
                 "regTimeStamp": doc.data().regTimeStamp
              }
              
             if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)) {
-               this.filteredActive.push(data)
+               this.filteredNormal.push(data)
             }
         })
           
       })
 
-          pas_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
-             this.filteredPassive = []
+          normal_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
+             this.filteredAnormal = []
 
             snapshot.forEach(doc => {
   
              const data = {
-                "id": doc.id,
-                "employee_id": doc.data().employee_id,
-                "name": doc.data().name,
-                "dept": doc.data().dept,
-                "position": doc.data().position,
-                "image": doc.data().image,
-                "status": doc.data().status,
-                "regDate": doc.data().regDate,
+                "data_id": doc.id,
+                "domain_imgurl": doc.data().domain_imgurl,
+                "sub_imgurl": doc.data().sub_imgurl,
+                "subrownum": doc.data().subrownum,
+                "subcolnum": doc.data().subcolnum,
+                "anormaly_status": doc.data().anormaly_status,
+                "rc_loss": doc.data().rc_loss,
+                "Date": doc.data().Date,
                 "regTimeStamp": doc.data().regTimeStamp
              }
              
             if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)) {
-               this.filteredPassive.push(data)
+               this.filteredAnormal.push(data)
             }
         })
       })
@@ -362,7 +348,7 @@ export default {
        }, 
  
        
-       makeChangeStat (emp_id, stat, name) {
+       makeChangeStat (data_id, stat) {
           
           var changeDate = new Date().toLocaleString()
           var changeTimeStamp = Date.now()
@@ -370,26 +356,25 @@ export default {
         
 
         db.collection("statChangeYedek").add({
-                "employee_id": emp_id,
-                "name": name,
+                "data_id": data_id,
                 "old-status": oldstat,
                 "changeDate": changeDate,
                 "changeTimeStamp": changeTimeStamp
         })
 
-        if (oldstat == "active"){
-          stat = "passive"
+        if (oldstat == "anormal"){
+          stat = "normal"
         }
         else {
-          stat = "active"
+          stat = "anormal"
         }
 
         db.collection("employees")
-            .where("employee_id", "==", emp_id).get()
+            .where("data_id", "==", data_id).get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     doc.ref.update({
-                        status: stat
+                        anormaly_status: stat
                     })
                 })
             })
