@@ -1,6 +1,6 @@
-# employeemanager
+# iai-anormalyDetection
 
-> simple employee
+> iai-ad
 
 ## Build Setup
 
