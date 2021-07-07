@@ -1,10 +1,10 @@
 <template>
-  <div id="edit-employee">
+  <div id="edit-data">
       <hr>
-      <h3>Edit Datas</h3>
+      <h3>Edit Data</h3>
       <hr>
       <div class="row">
-          <form @submit.prevent="updateEmployee" class="col s12">
+          <form @submit.prevent="updateData" class="col s12">
               <div class="row">
                 <div class="input-field col s12">
                     <strong>Data ID Number</strong>
@@ -45,15 +45,7 @@
                     
                 </div>
               </div>
-              <div class="row">
-                <div class="input-field col s12">
-                <strong>Select a Status</strong>
-                <select id="selection" class="form-select" aria-label="Default select example">
-                    <option value="normal">Normal</option>
-                    <option value="anormal">Anormal</option>
-                </select>
-                </div>
-              </div>
+                
               <button type="submit" class="btn">Submit</button>
               <router-link to="/" class="btn grey">Cancel</router-link>
           </form>
@@ -65,7 +57,7 @@
 <script>
 import db from "./firebaseInit"
 export default {
-    name: "edit-employee",
+    name: "edit-data",
     data () {
         return {
             data_id: null,
@@ -73,11 +65,11 @@ export default {
             sub_imgurl: null,
             subrownum: null,
             subcolnum: null,
-            anormaly_status: null
+            anormaly_status: null,
         }
     },
     beforeRouteEnter (to, from, next) {
-        db.collection("employees").where("data_id", "==", to.params.data_id).get()
+        db.collection("datas").where("data_id", "==", to.params.data_id).get()
          .then(querySnapshot => {
              querySnapshot.forEach(doc => {
                  next(vm => {
@@ -97,7 +89,7 @@ export default {
     methods: {
         
         fetchData () {
-            db.collection("employees")
+            db.collection("datas")
             .where("data_id", "==", this.$route.params.data_id).get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {
@@ -110,10 +102,10 @@ export default {
                 })
             })
         },
-        updateEmployee () {
+        updateData () {
             var selection = document.getElementById("selection").value;
 
-            db.collection("employees")
+            db.collection("datas")
             .where("data_id", "==", this.$route.params.data_id).get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {
@@ -126,7 +118,7 @@ export default {
                         anormaly_status: selection
                     })
                     .then(() => {
-                        this.$router.push({name: "view-employee", params: {data_id: this.data_id}})
+                        this.$router.push({name: "view-data", params: {data_id: this.data_id}})
                     })
                 })
             })

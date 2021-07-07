@@ -70,7 +70,7 @@
                 tag="article"
                 >
                   <router-link class="secondary-content" 
-                              v-bind:to="{name: 'view-employee', params: {data_id: data.data_id}}">
+                              v-bind:to="{name: 'view-data', params: {data_id: data.data_id}}">
                   <b-card-img 
                   :src="data.domain_imgurl" 
                   :title="data.data_id" 
@@ -90,7 +90,7 @@
                         <b-button v-on:click="makeChangeStat(data.data_id, data.anormaly_status)" block variant="outline-danger" size="sm">Make-Anormal</b-button>
                       </b-col>
                       <b-col cols="4">
-                        <router-link v-bind:to="{name: 'view-employee', params: {data_id: data.data_id}}">
+                        <router-link v-bind:to="{name: 'view-data', params: {data_id: data.data_id}}">
                                <b-button block variant="outline-primary">View</b-button>
                         </router-link>
                       </b-col>
@@ -114,7 +114,7 @@
 
                 >
                 <router-link class="secondary-content" 
-                              v-bind:to="{name: 'view-employee', params: {data_id: data.data_id}}">
+                              v-bind:to="{name: 'view-data', params: {data_id: data.data_id}}">
                   <b-card-img 
                   :src="data.domain_imgurl" 
                   :title="data.data_id" 
@@ -134,7 +134,7 @@
                       </b-col>
                       <b-col cols="4">
                         <router-link class="secondary-content" 
-                              v-bind:to="{name: 'view-employee', params: {data_id: data.data_id}}">
+                              v-bind:to="{name: 'view-data', params: {data_id: data.data_id}}">
                                <b-button block variant="outline-primary">View</b-button>
                         </router-link>
                       </b-col>
@@ -177,7 +177,9 @@ export default {
           before_value: "",
           after_value_time: "",
           before_value_time: "",
-          selected_key: ""
+          selected_key: "",
+          collection_name: "datas",
+          collection_name_yedek: "datasStatusYedek"
         }
     },
 
@@ -192,13 +194,13 @@ export default {
         },
 
         onContext() {
-
+  
             var limit_size = this.selected_key
-            var collection_name = "employees"
-            
+            var colName = this.collection_name
+
             if (limit_size < 0 || limit_size == ""){
                 
-                this.writeFS(collection_name)
+                this.writeFS(colName)
             }
             else if (limit_size >= 1) {
               
@@ -296,8 +298,8 @@ export default {
             var after_timestamp_added = this.addTimetoDate(after_timestamp, hours_after, minutes_after)
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
-            var anormal_lim_query = db.collection(collection_name).where("anormaly_status", "==", "anormal")
-            var normal_lim_query = db.collection(collection_name).where("anormaly_status", "==", "normal")
+            var anormal_lim_query = db.collection(this.collection_name).where("anormaly_status", "==", "anormal")
+            var normal_lim_query = db.collection(this.collection_name).where("anormaly_status", "==", "normal")
 
             anormal_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
              this.filteredAnormal = []
@@ -356,7 +358,7 @@ export default {
           var oldstat = stat
         
 
-        db.collection("statChangeYedek").add({
+        db.collection(this.collection_name_yedek).add({
                 "data_id": data_id,
                 "old-status": oldstat,
                 "changeDate": changeDate,
@@ -370,7 +372,7 @@ export default {
           stat = "anormal"
         }
 
-        db.collection("employees")
+        db.collection(this.collection_name)
             .where("data_id", "==", data_id).get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {

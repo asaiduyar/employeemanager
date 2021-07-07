@@ -3,7 +3,7 @@
       <div class="nav-wrapper green">
           <div class="container">
               <router-link to="/" class="brand-logo left">
-              Employee Manager
+              İstanbulAI Anormaly Detection
               </router-link>
           </div>
       </div>

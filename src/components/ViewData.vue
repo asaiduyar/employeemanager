@@ -1,5 +1,5 @@
 <template>
-  <div id="view-employee">
+  <div id="view-data">
       <ul class="collection with-header">
           <b-container md6>
             <b-row>
@@ -26,7 +26,7 @@
           <b-button variant="outline-primary">Back</b-button>
       </a>
       </router-link>
-      <b-button @click="deleteEmployee(data_id, domain_imgurl, anormaly_status, regDate)" variant="outline-danger">
+      <b-button @click="deleteData(data_id, domain_imgurl, anormaly_status, regDate)" variant="outline-danger">
           Delete
       </b-button>
               </b-col>
@@ -35,7 +35,7 @@
       </ul>
 
       <div class="fixed-action-btn">
-          <router-link v-bind:to="{ name: 'edit-employee', params: {data_id: data_id}}">
+          <router-link v-bind:to="{ name: 'edit-data', params: {data_id: data_id}}">
             <a href="#" class="btn-floating btn-large waves-effect waves-light red">
               <i class="fas fa-edit" title="Edit"></i>
               </a>
@@ -48,7 +48,7 @@
 <script>
 import db from "./firebaseInit"
 export default {
-    name: "view-employee",
+    name: "view-data",
     data () {
         return {
             data_id: null,
@@ -63,7 +63,7 @@ export default {
         }
     },
     beforeRouteEnter (to, from, next) {
-        db.collection("employees").where("data_id", "==", to.params.data_id).get()
+        db.collection("datas").where("data_id", "==", to.params.data_id).get()
          .then(querySnapshot => {
              querySnapshot.forEach(doc => {
                  next(vm => {
@@ -84,7 +84,7 @@ export default {
     },
     methods: {
         fetchData () {
-            db.collection("employees")
+            db.collection("datas")
             .where("data_id", "==", this.$route.params.data_id).get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {
@@ -99,10 +99,10 @@ export default {
             })
         },
 
-        deleteEmployee(data_id, domain_imgurl, anormaly_status, Date) {
+        deleteData(data_id, domain_imgurl, anormaly_status, Date) {
             if (confirm("Are you sure?")) {
 
-                db.collection("deletedEmployeesYedek").add({
+                db.collection("datasDeleted").add({
                 "data_id": data_id,
                 "domain_imgurl": domain_imgurl,
                 "anormaly_status": anormaly_status,
@@ -110,7 +110,7 @@ export default {
             })
                 
 
-                db.collection("employees")
+                db.collection("datas")
             .where("data_id", "==", this.$route.params.data_id).get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {

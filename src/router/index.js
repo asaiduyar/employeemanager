@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Dashboard from '@/components/Dashboard'
-import ViewEmployee from '@/components/ViewEmployee'
-import EditEmployee from '@/components/EditEmployee'
+import ViewData from '@/components/ViewData'
+import EditData from '@/components/EditData'
 import VueFilterDateFormat from 'vue-filter-date-format';
 
 
@@ -19,13 +19,13 @@ export default new Router({
     },
     {
       path: '/edit/:data_id',
-      name: 'edit-employee',
-      component: EditEmployee
+      name: 'edit-data',
+      component: EditData
     },
     {
       path: '/:data_id',
-      name: 'view-employee',
-      component: ViewEmployee
+      name: 'view-data',
+      component: ViewData
     }
   ]
 })
