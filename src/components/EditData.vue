@@ -68,6 +68,8 @@ export default {
             anormaly_status: null,
         }
     },
+
+    //sayfa gelmeden ilgili id'ye sahip kişinin verilerinin alınıp data() içinde return edilmesi
     beforeRouteEnter (to, from, next) {
         db.collection("datas").where("data_id", "==", to.params.data_id).get()
          .then(querySnapshot => {
@@ -102,6 +104,8 @@ export default {
                 })
             })
         },
+
+        // form doldurulup submit edildiğinde verilerin update edilmesi
         updateData () {
             var selection = document.getElementById("selection").value;
 

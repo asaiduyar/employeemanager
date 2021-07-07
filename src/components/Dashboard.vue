@@ -171,13 +171,13 @@ export default {
     data () {
         return {
           componentKey: 0,
-          filteredNormal: [],
+          filteredNormal: [],     // Normal ve Anormal verilerin tutulduğu arrayler
           filteredAnormal: [],
-          after_value: "",
+          after_value: "",        // Zaman filtrelemesinde kullanılan değerler
           before_value: "",
           after_value_time: "",
           before_value_time: "",
-          selected_key: "",
+          selected_key: "",         // Sondan seçilen adet kadar veri gösterimi
           collection_name: "datas",
           collection_name_yedek: "datasStatusYedek"
         }
@@ -188,24 +188,24 @@ export default {
 
     methods: {
 
-        //return time stamp milisecond
+        //return time stamp milisecond - seçilen tarih ve saat toplanması için
         addTimetoDate(timestamp, hours, minutes) {
             return (timestamp + (hours*3600000) + (minutes*60000) - 10800000)
         },
 
-        onContext() {
+        onContext() {   // ilk başta ve alttan belirli sayıda gösterilmesi için seçildiğinde ilgili fonksiyona yönlendirme 
   
             var limit_size = this.selected_key
             var colName = this.collection_name
 
-            if (limit_size < 0 || limit_size == ""){
+            if (limit_size < 0 || limit_size == ""){  
                 
-                this.writeFS(colName)
+                this.writeFS(colName)         // herhangi bir limit yoksa veya "hepsi" seçildiyse
             }
-            else if (limit_size >= 1) {
+            else if (limit_size >= 1) { 
               
 
-              this.writeFSLimit(collection_name, this.selected_key)
+              this.writeFSLimit(colName, this.selected_key)   // limitli şekilde
               
             }
             
@@ -213,7 +213,7 @@ export default {
 
 
        writeFS (collection_name) {
-            var minutes_after = this.after_value_time.substring(3,5)
+            var minutes_after = this.after_value_time.substring(3,5)    // zaman filtrelemesinde ilgili kısımların işlenmesi
             var hours_after = this.after_value_time.substring(0,2)
             var minutes_before = this.before_value_time.substring(3,5)
             var hours_before = this.before_value_time.substring(0,2)
@@ -225,11 +225,11 @@ export default {
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
 
+          // normal ve anormaller için firestoredan değişime duyarlı veri alımı ve sayfada gösterilmesi için ilgili array içine yazım.
           db.collection(collection_name).where("anormaly_status","==","normal").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
              this.filteredNormal = []
-             this.filteredAnormal = []
              if(this.selected_key >= 1 ){
-              this.writeFSLimit(collection_name, this.selected_key)
+              this.writeFSLimit(collection_name, this.selected_key)  // sondan gösterme filtresi için kontrol
               }
             else {
             snapshot.forEach(doc => {
@@ -248,10 +248,8 @@ export default {
             if( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.anormaly_status == "normal") {
                this.filteredNormal.push(data)
             }
-            else if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.anormaly_status == "anormal"){
-               this.filteredAnormal.push(data)}
-           })
-          }
+          })
+        }
       })
 
         db.collection(collection_name).where("anormaly_status","==","anormal").orderBy("regTimeStamp", "desc").limit().onSnapshot(snapshot => {
@@ -275,7 +273,7 @@ export default {
                 "regTimeStamp": doc.data().regTimeStamp
              }
              
-            if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added)){
+            if ( !(data.regTimeStamp < after_timestamp_added) && !(data.regTimeStamp > before_timestamp_added) && data.anormaly_status == "anormal"){
                this.filteredAnormal.push(data)}
             })
           }
@@ -284,10 +282,10 @@ export default {
        },
 
 
-        // override writeFS
+        // belli sayıda gösterim için limit edilmiş
        writeFSLimit (collection_name, limit_size) {
 
-            var minutes_after = this.after_value_time.substring(3,5)
+            var minutes_after = this.after_value_time.substring(3,5)    // zaman filtrelemesinde ilgili kısımların işlenmesi
             var hours_after = this.after_value_time.substring(0,2)
             var minutes_before = this.before_value_time.substring(3,5)
             var hours_before = this.before_value_time.substring(0,2)
@@ -298,8 +296,9 @@ export default {
             var after_timestamp_added = this.addTimetoDate(after_timestamp, hours_after, minutes_after)
             var before_timestamp_added = this.addTimetoDate(before_timestamp, hours_before, minutes_before)
 
-            var anormal_lim_query = db.collection(this.collection_name).where("anormaly_status", "==", "anormal")
-            var normal_lim_query = db.collection(this.collection_name).where("anormaly_status", "==", "normal")
+
+            var anormal_lim_query = db.collection(collection_name).where("anormaly_status", "==", "anormal")
+            var normal_lim_query = db.collection(collection_name).where("anormaly_status", "==", "normal")
 
             anormal_lim_query.orderBy("regTimeStamp", "desc").limit(limit_size).get().then(snapshot => {
              this.filteredAnormal = []
@@ -350,7 +349,7 @@ export default {
 
        }, 
  
-       
+       // status change butonu için status'un değiştirilip eski durumu, id'si ve değişim zamanının yedek collection'a yazımı
        makeChangeStat (data_id, stat) {
           
           var changeDate = new Date().toLocaleString()

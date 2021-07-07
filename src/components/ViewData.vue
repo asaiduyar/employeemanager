@@ -58,10 +58,11 @@ export default {
             subcolnum: null,
             anormaly_status: null,
             rc_loss: null,
-            regDate: null,
-            regTimeStamp: null
+            regDate: null
         }
     },
+
+    //sayfa gelmeden ilgili id'ye sahip kişinin verilerinin alınıp data() içinde return edilmesi
     beforeRouteEnter (to, from, next) {
         db.collection("datas").where("data_id", "==", to.params.data_id).get()
          .then(querySnapshot => {
@@ -98,7 +99,8 @@ export default {
                 })
             })
         },
-
+        
+        // ilgili data'nın silimi ve delete için yedek collectiona kaydı
         deleteData(data_id, domain_imgurl, anormaly_status, Date) {
             if (confirm("Are you sure?")) {
 
