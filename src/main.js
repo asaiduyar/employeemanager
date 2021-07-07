@@ -3,7 +3,16 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import BootstrapVue from 'bootstrap-vue/dist/bootstrap-vue.esm';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
 
+Vue.config.productionTip = false;
+
+Vue.use(Antd);
+Vue.use(BootstrapVue);
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
